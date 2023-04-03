@@ -23,4 +23,12 @@ async def on_message(message):
     if message.content.startswith("!about"):
         await message.channel.send("I am a Discord Bot. I am still learning. So, please be patient with me. I will be able to help you soon. Thank you for your patience!")
 
+@client.event
+async def on_member_join(member):
+    print(f'{member} has joined a server.')
+
+@client.event
+async def on_member_remove(member):
+    print(f'{member} has left a server.')
+
 client.run(os.environ['TOKEN'])
