@@ -1,6 +1,7 @@
 import discord
 import os
 from environs import Env
+from discord.ext import commands
 env = Env()
 env.read_env()
 
@@ -22,6 +23,9 @@ async def on_message(message):
                                    "$about - I will tell you about myself. \n")
     if message.content.startswith("!about"):
         await message.channel.send("I am a Discord Bot. I am still learning. So, please be patient with me. I will be able to help you soon. Thank you for your patience!")
+    if message.content.startswith("!test"):
+        channel = client.get_channel(1092495636223492187)
+        await channel.send("I am working fine. Thank you for testing me.")
 
 @client.event
 async def on_member_join(member):
@@ -30,5 +34,6 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(f'{member} has left a server.')
+
 
 client.run(os.environ['TOKEN'])
