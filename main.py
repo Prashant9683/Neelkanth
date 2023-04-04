@@ -25,9 +25,13 @@ async def on_message(message):
                                    "!about - I will tell you about myself. \n")
     if message.content.startswith("!about"):
         await message.channel.send("I am a Discord Bot. I am still learning. So, please be patient with me. I will be able to help you soon. Thank you for your patience!")
-    if message.content.startswith("!test"):
+    if message.content.startswith("!record"):
         channel = client.get_channel(env.int('CHANNEL'))
-        await channel.send("I am working fine. Thank you for testing me.")
+        await message.channel.send("Type your message here, I am listening...")
+        def check(m):
+            return m.author == message.author and m.channel == message.channel
+        msg = await client.wait_for('message', check=check)
+        await channel.send(msg.content)
 
 @client.event
 async def on_member_join(member):
@@ -41,5 +45,9 @@ async def on_member_remove(member):
     channel = client.get_channel(env.int('GENERAL_CHANNEL'))
     await channel.send(f'{member} has left the server.')
 
+
+@client.event
+async def copy(ctx, message):
+    await ctx.send(message)
 
 client.run(os.environ['TOKEN'])
