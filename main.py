@@ -11,9 +11,11 @@ async def on_ready():
     print("We have logged in as {0.user}".format(client))
     channel = client.get_channel(env.int('GENERAL_CHANNEL'))
     await channel.send("Hello, I am online. You can use various commands to use me beginning with the prefix '!'.")
-
+status_update = []
 @client.event
 async def on_message(message):
+    specific_channel = client.get_channel(env.int('CHANNEL'))
+    general_channel = client.get_channel(env.int('GENERAL_CHANNEL'))
     if message.author == client.user:
         return
     if message.content.startswith("!hello"):
@@ -31,7 +33,13 @@ async def on_message(message):
         def check(m):
             return m.author == message.author and m.channel == message.channel
         msg = await client.wait_for('message', check=check)
+        status_update.append(msg.content + " - " + str(message.author))
         await channel.send(msg.content)
+    if message.content.startswith("!status"):
+        channel = client.get_channel(env.int('CHANNEL'))
+        await channel.send("Here are the status updates: ")
+        for i in status_update:
+            await channel.send(i)
 
 @client.event
 async def on_member_join(member):
