@@ -1,6 +1,8 @@
 import discord
 import os
 from environs import Env
+from datetime import datetime
+import pytz
 from discord.ext import commands
 env = Env()
 env.read_env()
@@ -33,11 +35,11 @@ async def on_message(message):
         def check(m):
             return m.author == message.author and m.channel == message.channel
         msg = await client.wait_for('message', check=check)
-        status_update.append(msg.content + " - " + str(message.author))
+        status_update.append(msg.content + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
         await channel.send(msg.content)
     if message.content.startswith("!status"):
         channel = client.get_channel(env.int('CHANNEL'))
-        await channel.send("Here are the status updates: ")
+        await channel.send("Here are the status updates: \n")
         for i in status_update:
             await channel.send(i)
 
