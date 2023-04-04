@@ -32,10 +32,14 @@ async def on_message(message):
 @client.event
 async def on_member_join(member):
     print(f'{member} has joined a server.')
+    channel = client.get_channel(env.int('GENERAL_CHANNEL'))
+    await channel.send(f'{member} has joined the server.')
 
 @client.event
 async def on_member_remove(member):
     print(f'{member} has left a server.')
+    channel = client.get_channel(env.int('GENERAL_CHANNEL'))
+    await channel.send(f'{member} has left the server.')
 
 
 client.run(os.environ['TOKEN'])
