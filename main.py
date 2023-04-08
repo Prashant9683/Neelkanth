@@ -22,8 +22,6 @@ Now there are some commands that will be used to interact with the bot.
 """
 @client.event
 async def on_message(message):
-    specific_channel = client.get_channel(env.int('CHANNEL'))
-    general_channel = client.get_channel(env.int('GENERAL_CHANNEL'))
     if message.author == client.user:
         return
     """
