@@ -35,7 +35,10 @@ here the bot will send a message to the channel that the bot is online.
         await message.channel.send("You can use the following commands to interact with me: \n"
                                    "!hello - I will greet you. \n"
                                    "!help - I will tell you what I can do for you. \n"
-                                   "!about - I will tell you about myself. \n")
+                                   "!about - I will tell you about myself. \n"
+                                   "!record - I will record your status update. \n"
+                                   "!status - I will show you the status updates of all the participants. \n"
+                                   "!csv - I will send you the status updates in a csv file. \n")
     if message.content.startswith("!about"):
         await message.channel.send("I am a Discord Bot. I am still learning. So, please be patient with me. I will be "
                                    "able to help you soon. Thank you for your patience!")
