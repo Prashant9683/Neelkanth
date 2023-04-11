@@ -1,7 +1,7 @@
 # Neelkanth
 
 
-A discord bot that allows tracks record of the status updates.
+A discord bot that allows us to track record of the status updates.
 
 ## Usage
 
