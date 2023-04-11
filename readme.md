@@ -31,6 +31,10 @@ You can install it by following - [install directly on your computer](#install-d
     - You need to add Python to your PATH in environment variables.
 - Start the bot:
   - Go to the directory where the main.py file is located.
+    - First install all the python dependencies needed by running below command in terminal -
+    ```sh
+    python3 pip install -r requirements.txt
+    ```
     - Type -
     ```sh  
     python3 main.py
