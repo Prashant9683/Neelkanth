@@ -35,6 +35,10 @@ You can install it by following - [install directly on your computer](#install-d
     ```sh
     python3 pip install -r requirements.txt
     ```
+    or simply
+    ```sh
+    pip install -r requirements.txt
+    ```
     - Type -
     ```sh  
     python3 main.py
