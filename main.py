@@ -4,6 +4,7 @@ from environs import Env
 import pytz
 import psycopg2
 import pandas as pd
+from sqlalchemy import create_engine, URL
 env = Env()
 env.read_env()
 
@@ -114,19 +115,19 @@ here the bot will send a message to the channel that the bot is online.
         conn.close()
     if message.content.startswith("!csv"):
         channel = client.get_channel(env.int('CHANNEL'))
-        conn = psycopg2.connect(
-            host='localhost',
-            database=env.str('DATABASE'),
-            user=env.str('USER'),
+        url_object = URL.create(
+            "postgresql",
+            username=env.str('USER'),
             password=env.str('PASSWORD'),
+            host="localhost",
+            database=env.str('DATABASE'),
             port=env.str('PORT')
         )
-
-        cursor = conn.cursor()
-        df = pd.read_sql_query('SELECT * FROM status_update', conn)
+        engine = create_engine(url_object)
+        df = pd.read_sql_query('SELECT * FROM status_update', engine)
         df.to_csv('table.csv', index=False)
         await channel.send(file=discord.File('table.csv'))
-        conn.close()
+        engine.dispose()
 
 """
 This event will be called when a new member joins the server.

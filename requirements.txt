@@ -3,3 +3,4 @@ discord.py
 environs
 psycopg2
 pandas
+sqlalchemy
