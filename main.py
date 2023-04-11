@@ -90,8 +90,23 @@ here the bot will send a message to the channel that the bot is online.
         channel = client.get_channel(env.int('CHANNEL')) # The variable CHANNEL here is the general channel which
         # will be accessible by everyone. and the channel id should be written in the .env file.
         await channel.send("Here are the status updates: \n")
-        for i in status_update: # This will return all the status updates.
-            await channel.send(i)
+        conn = psycopg2.connect(
+            host='localhost',
+            database=env.str('DATABASE'),
+            user=env.str('USER'),
+            password=env.str('PASSWORD'),
+            port=env.str('PORT')
+        )
+
+        cursor = conn.cursor()
+        efg = """SELECT STATUS FROM status_update"""
+        cursor.execute(efg)
+        row = cursor.rowcount
+        data = [(0,), (1,), (0,)]
+        if row >= 1:
+            data = cursor.fetchall()
+        for i in data:
+            await channel.send(i[0])
 
 """
 This event will be called when a new member joins the server.
