@@ -3,6 +3,7 @@ import os
 from environs import Env
 import pytz
 import psycopg2
+import pandas as pd
 env = Env()
 env.read_env()
 
@@ -87,8 +88,8 @@ here the bot will send a message to the channel that the bot is online.
         conn.close()
         await message.channel.send("Your message has been recorded successfully. Thank you for your update!")
     if message.content.startswith("!status"):
-        channel = client.get_channel(env.int('CHANNEL')) # The variable CHANNEL here is the general channel which
-        # will be accessible by everyone. and the channel id should be written in the .env file.
+        channel = client.get_channel(env.int('CHANNEL')) # The variable CHANNEL here is the restricted channel which
+        # will be accessible only by mentors. and the channel id should be written in the .env file.
         await channel.send("Here are the status updates: \n")
         conn = psycopg2.connect(
             host='localhost',
@@ -107,6 +108,22 @@ here the bot will send a message to the channel that the bot is online.
             data = cursor.fetchall()
         for i in data:
             await channel.send(i[0])
+        conn.close()
+    if message.content.startswith("!csv"):
+        channel = client.get_channel(env.int('CHANNEL'))
+        conn = psycopg2.connect(
+            host='localhost',
+            database=env.str('DATABASE'),
+            user=env.str('USER'),
+            password=env.str('PASSWORD'),
+            port=env.str('PORT')
+        )
+
+        cursor = conn.cursor()
+        df = pd.read_sql_query('SELECT * FROM status_update', conn)
+        df.to_csv('table.csv', index=False)
+        await channel.send(file=discord.File('table.csv'))
+        conn.close()
 
 """
 This event will be called when a new member joins the server.

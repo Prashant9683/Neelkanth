@@ -2,3 +2,4 @@ pytz
 discord.py
 environs
 psycopg2
+pandas
