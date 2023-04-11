@@ -5,7 +5,7 @@ A discord bot that allows us to track record of the status updates.
 
 ## Usage
 
-Type `!help` in a Discord server where this bot exists to get a list of commands you can use.
+Type `/help` in a Discord server where this bot exists to get a list of commands you can use.
 
 ## Installation
 
