@@ -1,3 +1,4 @@
 pytz
 discord.py
 environs
+psycopg2

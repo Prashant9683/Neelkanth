@@ -2,6 +2,7 @@ import discord
 import os
 from environs import Env
 import pytz
+import psycopg2
 env = Env()
 env.read_env()
 
@@ -52,6 +53,35 @@ here the bot will send a message to the channel that the bot is online.
         status_update.append(msg.content + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
         await channel.send(msg.content) # This will send the message to the restricted channel (which will only be
         # accessible by mentors.
+        conn = psycopg2.connect(
+            host='localhost',
+            database=env.str('DATABASE'),
+            user=env.str('USER'),
+            password=env.str('PASSWORD'),
+            port=env.str('PORT')
+        )
+
+        cursor = conn.cursor()
+
+        sql = '''CREATE TABLE IF NOT EXISTS status_update
+                      (ID INT PRIMARY KEY     NOT NULL,
+                      STATUS           TEXT    NOT NULL
+                      ) '''
+        cursor.execute(sql)
+        abc = """SELECT ID FROM status_update"""
+        cursor.execute(abc)
+        row = cursor.rowcount
+        data = [(0,), (1,), (0,)]
+        if row >= 1:
+            data = cursor.fetchall()
+        existingIds = data[-1][0]
+        print(existingIds)
+        cursor.execute("INSERT INTO status_update (ID, STATUS) VALUES (%s, %s)",
+                       (existingIds + 1, status_update[len(status_update) - 1]))
+        print("List has been inserted to table successfully...")
+        conn.commit()
+        conn.close()
+        await message.channel.send("Your message has been recorded successfully. Thank you for your update!")
     if message.content.startswith("!status"):
         channel = client.get_channel(env.int('CHANNEL')) # The variable CHANNEL here is the general channel which
         # will be accessible by everyone. and the channel id should be written in the .env file.
