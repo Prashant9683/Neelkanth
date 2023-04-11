@@ -53,6 +53,11 @@ here the bot will send a message to the channel that the bot is online.
         status_update.append(msg.content + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
         await channel.send(msg.content) # This will send the message to the restricted channel (which will only be
         # accessible by mentors.
+
+        """
+        here this connects to the database and creates a table if it does not exist, stores all the status update data to the table.
+        """
+
         conn = psycopg2.connect(
             host='localhost',
             database=env.str('DATABASE'),
