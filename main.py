@@ -18,6 +18,9 @@ async def on_ready():
     channel = client.get_channel(env.int('GENERAL_CHANNEL'))
     await channel.send("Hello, I am online. You can use various commands to use me beginning with the prefix '!'.")
 status_update = []
+status_general = []
+time = []
+user = []
 
 """
 here this on message event will be called when the bot will receive a message.
@@ -55,7 +58,10 @@ here the bot will send a message to the channel that the bot is online.
         def check(m):
             return m.author == message.author and m.channel == message.channel
         msg = await client.wait_for('message', check=check)
-        status_update.append(msg.content + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
+        status_general.append(msg.content + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
+        status_update.append(msg.content) # + "\n - Sent by " + str(message.author) + " at " + str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST"
+        time.append(str(message.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
+        user.append(str(message.author))
         await channel.send(msg.content) # This will send the message to the restricted channel (which will only be
         # accessible by mentors.
 
@@ -74,7 +80,10 @@ here the bot will send a message to the channel that the bot is online.
 
         sql = '''CREATE TABLE IF NOT EXISTS status_update
                       (ID INT PRIMARY KEY     NOT NULL,
-                      STATUS           TEXT    NOT NULL
+                      STATUS           TEXT    NOT NULL,
+                      USERN            TEXT    NOT NULL,
+                      TIME            TEXT    NOT NULL,
+                      STATUS_GENERAL            TEXT    NOT NULL
                       ) '''
         cursor.execute(sql)
         abc = """SELECT ID FROM status_update"""
@@ -84,9 +93,8 @@ here the bot will send a message to the channel that the bot is online.
         if row >= 1:
             data = cursor.fetchall()
         existingIds = data[-1][0]
-        print(existingIds)
-        cursor.execute("INSERT INTO status_update (ID, STATUS) VALUES (%s, %s)",
-                       (existingIds + 1, status_update[len(status_update) - 1]))
+        cursor.execute("INSERT INTO status_update (ID, STATUS, USERN, TIME, STATUS_GENERAL) VALUES (%s, %s, %s, %s, %s)",
+                       (existingIds + 1, status_update[len(status_update) - 1], user[len(user) - 1], time[len(time) - 1], status_general[len(status_general) - 1]))
         print("List has been inserted to table successfully...")
         conn.commit()
         conn.close()
@@ -104,7 +112,7 @@ here the bot will send a message to the channel that the bot is online.
         )
 
         cursor = conn.cursor()
-        efg = """SELECT STATUS FROM status_update"""
+        efg = """SELECT STATUS_GENERAL FROM status_update"""
         cursor.execute(efg)
         row = cursor.rowcount
         data = [(0,), (1,), (0,)]
