@@ -13,6 +13,7 @@ bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 status_update = []
 status_general = []
 time = []
+date = []
 user = []
 
 """here this on ready event will be called when the bot is ready to use. It will print the name of the bot and the id 
@@ -90,7 +91,8 @@ async def record(interaction: discord.Interaction, thing_to_say: str):
         # will be accessible only by mentors. and the channel id should be written in the .env file.
     status_general.append(thing_to_say + "\n - Sent by " + str(interaction.user) + " at " + str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
     status_update.append(thing_to_say)
-    time.append(str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y %H:%M:%S")) + " IST")
+    time.append(str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%H:%M:%S")) + " IST")
+    date.append(str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y")))
     user.append(str(interaction.user))
     await channel.send(thing_to_say)
 
@@ -109,8 +111,8 @@ async def record(interaction: discord.Interaction, thing_to_say: str):
     (ID INT PRIMARY KEY     NOT NULL,
     STATUS           TEXT    NOT NULL,
     USERN            TEXT    NOT NULL,
-    TIME            TEXT    NOT NULL,
-    DATE            TEXT    NOT NULL
+    DATE            TEXT    NOT NULL,
+    TIME            TEXT    NOT NULL
     )'''
     sql2 = '''CREATE TABLE IF NOT EXISTS status_update2
                             (ID INT PRIMARY KEY     NOT NULL,
@@ -125,8 +127,8 @@ async def record(interaction: discord.Interaction, thing_to_say: str):
     if row >= 1:
         data = cursor.fetchall()
     existingIds = data[-1][0]
-    cursor.execute("INSERT INTO status_update (ID, STATUS, USERN, TIME) VALUES (%s, %s, %s, %s)",
-                   (existingIds + 1, status_update[len(status_update) - 1], user[len(user) - 1], time[len(time) - 1]))
+    cursor.execute("INSERT INTO status_update (ID, STATUS, USERN, DATE, TIME) VALUES (%s, %s, %s, %s, %s)",
+                   (existingIds + 1, status_update[len(status_update) - 1], user[len(user) - 1], date[len(date)-1], time[len(time) - 1]))
     cursor.execute("INSERT INTO status_update2 (ID, STATUS_GENERAL) VALUES (%s, %s)",
                    (existingIds + 1, status_general[len(status_general) - 1]))
     print("List has been inserted to table successfully...")
