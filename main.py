@@ -14,7 +14,7 @@ status_update = []
 status_general = []
 time = []
 date = []
-user = []
+usern = []
 
 """here this on ready event will be called when the bot is ready to use. It will print the name of the bot and the id 
 of the bot and It will send a message to the channel that the bot is online."""
@@ -93,7 +93,7 @@ async def record(interaction: discord.Interaction, thing_to_say: str):
     status_update.append(thing_to_say)
     time.append(str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%H:%M:%S")) + " IST")
     date.append(str(interaction.created_at.astimezone(pytz.timezone('Asia/Kolkata')).strftime("%d/%m/%Y")))
-    user.append(str(interaction.user))
+    usern.append(str(interaction.user))
     await channel.send(thing_to_say)
 
     """here this connects to the database and creates a table if it does not exist, stores all the status update 
@@ -128,7 +128,7 @@ async def record(interaction: discord.Interaction, thing_to_say: str):
         data = cursor.fetchall()
     existingIds = data[-1][0]
     cursor.execute("INSERT INTO status_update (ID, STATUS, USERN, DATE, TIME) VALUES (%s, %s, %s, %s, %s)",
-                   (existingIds + 1, status_update[len(status_update) - 1], user[len(user) - 1], date[len(date)-1], time[len(time) - 1]))
+                   (existingIds + 1, status_update[len(status_update) - 1], usern[len(usern) - 1], date[len(date)-1], time[len(time) - 1]))
     cursor.execute("INSERT INTO status_update2 (ID, STATUS_GENERAL) VALUES (%s, %s)",
                    (existingIds + 1, status_general[len(status_general) - 1]))
     print("List has been inserted to table successfully...")
